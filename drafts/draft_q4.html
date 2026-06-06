@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>謎解き数学ミッション</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:radial-gradient(ellipse at 20% 20%,#0d2137 0%,#0a0e1a 60%);
+  min-height:100vh;font-family:'Noto Sans JP',sans-serif;color:#e2e8f0;
+}
+#app{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;}
+.wrap{width:100%;max-width:720px;transition:opacity .5s,transform .5s;}
+.wrap.in{opacity:1;transform:translateY(0);}
+.wrap.out{opacity:0;transform:translateY(16px);}
+
+/* header */
+.badge{display:inline-block;background:linear-gradient(135deg,#00d4ff,#0090cc);color:#fff;font-size:11px;font-weight:700;letter-spacing:.2em;padding:4px 14px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;}
+.main-title{font-size:clamp(22px,5vw,34px);font-weight:900;background:linear-gradient(135deg,#ffd700,#ff6b35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 0 6px;line-height:1.2;}
+.main-sub{font-size:15px;color:#64748b;}
+.header{text-align:center;margin-bottom:32px;}
+
+/* select */
+.select-intro{text-align:center;font-size:14px;color:#64748b;margin-bottom:24px;line-height:1.7;}
+.quiz-card{background:#111827;border:1px solid #1e3a5f;border-radius:16px;padding:24px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:18px;transition:border-color .25s,transform .25s;}
+.quiz-card:hover{border-color:#00d4ff;transform:translateX(4px);}
+.quiz-icon{font-size:36px;width:64px;height:64px;border-radius:16px;background:#0d1b2a;border:1px solid #1e3a5f;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.quiz-info{flex:1;}
+.quiz-card-title{font-size:18px;font-weight:800;color:#e2e8f0;margin-bottom:8px;}
+.quiz-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#64748b;align-items:center;}
+.meta-tag{background:rgba(0,212,255,.13);border:1px solid rgba(0,212,255,.27);color:#00d4ff;padding:2px 10px;border-radius:6px;font-weight:600;}
+.quiz-arrow{font-size:24px;color:#ff6b35;flex-shrink:0;}
+
+/* story */
+.back-btn{background:transparent;border:none;color:#64748b;font-size:13px;cursor:pointer;margin-bottom:16px;font-family:inherit;padding:0;}
+.story-card{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:16px;padding:28px 24px;margin-bottom:24px;box-shadow:0 0 20px rgba(0,212,255,.27),0 0 40px rgba(0,212,255,.13);}
+.story-pre{white-space:pre-wrap;font-size:14px;line-height:1.9;color:#cbd5e1;font-family:inherit;}
+.start-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,#ff6b35,#e55a2b);border:none;border-radius:12px;color:#fff;font-size:18px;font-weight:800;cursor:pointer;letter-spacing:.05em;font-family:inherit;box-shadow:0 0 20px rgba(255,107,53,.27);transition:transform .15s;}
+.start-btn:hover{transform:scale(1.02);}
+
+/* quiz */
+.progress-bar{height:4px;background:#1e3a5f;border-radius:4px;margin-bottom:24px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#00d4ff,#ff6b35);border-radius:4px;transition:width .4s ease;}
+.stage-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,.13);border:1px solid rgba(0,212,255,.4);border-radius:8px;padding:4px 14px;font-size:12px;font-weight:700;color:#00d4ff;letter-spacing:.1em;margin-bottom:16px;}
+.q-card{background:#111827;border:1px solid #1e3a5f;border-radius:16px;padding:24px;margin-bottom:16px;}
+.q-label{font-size:12px;color:#64748b;font-weight:600;margin-bottom:8px;letter-spacing:.1em;}
+.q-text{font-size:15px;line-height:1.8;white-space:pre-wrap;color:#e2e8f0;font-family:inherit;}
+.hint-btn{background:transparent;border:1px dashed #64748b;color:#64748b;font-size:12px;padding:6px 16px;border-radius:8px;cursor:pointer;margin-top:12px;font-family:inherit;}
+.hint-box{margin-top:12px;padding:12px 16px;background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.27);border-radius:10px;font-size:13px;color:#ffd700;white-space:pre-wrap;}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.choice-btn{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:12px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;color:#e2e8f0;font-family:inherit;font-size:14px;text-align:left;width:100%;}
+.choice-btn:hover:not([disabled]){border-color:#00d4ff;background:rgba(0,212,255,.1);}
+.choice-btn.selected{background:rgba(0,212,255,.13);border-color:#00d4ff;color:#00d4ff;font-weight:700;}
+.choice-btn.correct{background:rgba(34,197,94,.13);border-color:#22c55e;color:#22c55e;font-weight:700;}
+.choice-btn.wrong{background:rgba(239,68,68,.13);border-color:#ef4444;color:#ef4444;}
+.choice-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;border:1.5px solid currentColor;background:rgba(255,255,255,.07);}
+.confirm-btn{width:100%;padding:16px;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.05em;margin-bottom:12px;transition:all .2s;}
+.confirm-btn.ready{background:linear-gradient(135deg,#00d4ff,#0090cc);}
+.confirm-btn.waiting{background:#64748b;cursor:not-allowed;}
+.explanation{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.27);border-radius:12px;padding:16px 20px;margin-bottom:12px;font-size:14px;line-height:1.8;white-space:pre-wrap;color:#86efac;}
+.wrong-msg{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.27);border-radius:12px;padding:12px 16px;margin-bottom:12px;font-size:14px;color:#fca5a5;}
+.next-btn{width:100%;padding:16px;background:linear-gradient(135deg,#ff6b35,#e55a2b);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.05em;box-shadow:0 0 20px rgba(255,107,53,.27);}
+
+/* result */
+.result-card{text-align:center;background:#111827;border:1px solid #1e3a5f;border-radius:20px;padding:40px 28px;box-shadow:0 0 20px rgba(255,215,0,.27);}
+.result-label{font-size:13px;color:#64748b;margin-top:8px;letter-spacing:.15em;}
+.score{font-size:72px;font-weight:900;background:linear-gradient(135deg,#ffd700,#ff6b35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin:16px 0;}
+.dots{display:flex;justify-content:center;gap:10px;margin-bottom:28px;flex-wrap:wrap;}
+.dot{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.dot.ok{background:rgba(34,197,94,.2);border:2px solid #22c55e;}
+.dot.ng{background:rgba(239,68,68,.2);border:2px solid #ef4444;}
+.result-msg{font-size:16px;line-height:1.8;color:#cbd5e1;margin-bottom:28px;white-space:pre-wrap;}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.retry-btn{padding:14px 28px;background:linear-gradient(135deg,#00d4ff,#0090cc);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 0 20px rgba(0,212,255,.27);}
+.sel-btn{padding:14px 28px;background:transparent;border:1px solid #1e3a5f;border-radius:12px;color:#e2e8f0;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+<div id="app"><div class="wrap out" id="wrap"></div></div>
+<script>
+const Q = [
+  {
+    id:"denki", subtitle:"冬の電気代の謎を解け！", icon:"⚡",
+    theme:"電気代・単位換算", difficulty:"★★☆",
+    story:"【緊急ミッション】\n───────────────────────────────\n12月のある朝、中学1年生のケンタは\nお母さんから一枚の紙を手渡された。\n\n「ケンタ、今月の電気代の明細よ。\n去年の12月よりずいぶん高くなってるの。\nもしかして、あなたの部屋の電気のせいじゃないかしら？」\n\n明細には、こう書かれていた。\n\n  ┌──────────────────────────────┐\n  │ 去年12月の電気代：  18,000円  │\n  │ 今年12月の電気代：  19,800円  │\n  │ 増加額　　　　　：   1,800円  │\n  └──────────────────────────────┘\n\n去年の12月と比べて、今年ケンタの部屋で\n変わったことは3つあった。\n\n▶ ゲーム機（40W）\n  冬休みに入り、毎日1時間多く使っている\n\n▶ 電気カーペット（200W）\n  今年から新しく導入した\n  ※ 8時間自動オフ機能つき\n\n▶ エアコン（暖房）（800W）\n  今年は去年より寒く、毎日1時間多くつけている\n\n電気代の単価は 1kWh あたり 30円 とする。\n（1kWh = 1,000W × 1時間 = 1,000Wh）\n\n──── この謎を、数学の力で解き明かせ！────",
+    questions:[
+      {
+        stage:"STEP 1", label:"電力量の計算",
+        question:"まず、ゲーム機の「増えた分」の電力量を求めよう。\nゲーム機（40W）を今月30日間、毎日1時間多く使ったとき、\n増えた電力量は何Wh？",
+        hint:"電力量（Wh）＝ 消費電力（W）× 時間（h）× 日数",
+        choices:[
+          {label:"A",value:"800Wh",correct:false},
+          {label:"B",value:"1,200Wh",correct:true},
+          {label:"C",value:"1,500Wh",correct:false},
+          {label:"D",value:"40Wh",correct:false}
+        ],
+        explanation:"40W × 1時間 × 30日 = 1,200Wh が正解！\n\n電力量（Wh）＝ 消費電力（W）× 時間（h）× 日数\nこれを電気代に換算すると、\n1,200Wh ÷ 1,000 = 1.2kWh\n1.2kWh × 30円 = 36円\n\n「ゲームを1時間多く遊んだせいだ！」と思ったら、\nたったの36円。意外と小さいね。\nでは、本当の原因はどこにあるのだろう…？"
+      },
+      {
+        stage:"STEP 2", label:"2つの暖房器具の電気代",
+        question:"次に、今月から増えた暖房器具2つの電気代を合計しよう。\n\n▶ 電気カーペット（200W）を毎日5時間、30日間使用\n▶ エアコン暖房（800W）を毎日1時間多く、30日間使用\n\n電気代の単価は 1kWh あたり 30円。\n（1kWh = 1,000Wh）\n\nこの2つを合わせた電気代の増加分は何円？\nまずそれぞれの電力量（Wh）を求め、\nkWhに変換してから電気代を計算しよう。",
+        hint:"それぞれ別々に計算してから合計しよう。\n電気代＝電力量（kWh）× 30円",
+        choices:[
+          {label:"A",value:"900円",correct:false},
+          {label:"B",value:"1,260円",correct:false},
+          {label:"C",value:"1,620円",correct:true},
+          {label:"D",value:"2,400円",correct:false}
+        ],
+        explanation:"【電気カーペット】\n200W × 5時間 × 30日 = 30,000Wh = 30kWh\n30kWh × 30円 = 900円\n\n【エアコン暖房】\n800W × 1時間 × 30日 = 24,000Wh = 24kWh\n24kWh × 30円 = 720円\n\n合計：900円 + 720円 = 1,620円 が正解！\n\nゲーム機の36円と合わせると 1,656円。\nでも増加額は 1,800円。\nまだ 144円 の謎が残っている…！"
+      },
+      {
+        stage:"STEP 3", label:"謎の完全解明",
+        question:"ゲーム機・電気カーペット・エアコンの増加分を\nすべて合計しても、増加額より 144円 足りない。\n\nケンタはもう一度、自分の生活を振り返った。\n\n「そういえば…週末、暖かくてそのまま\n 寝てしまったことが何度かあったな。\n 電気カーペットは8時間自動オフだから\n 大丈夫だと思ってたけど…」\n\n電気カーペット（200W）は毎晩5時間使用している。\n電気代の単価は 1kWh あたり 30円。\n（1kWh = 1,000Wh）\n\nこの 144円 の謎を解け。\n今月、寝落ちによる切り忘れは何日あったことになる？",
+        hint:"寝落ちした夜、5時間使用後に就寝→自動オフまで何時間余分に通電？\nまず1日あたりの切り忘れ電気代を求めてから、合わない金額を割ろう。",
+        choices:[
+          {label:"A",value:"5日",correct:false},
+          {label:"B",value:"6日",correct:false},
+          {label:"C",value:"8日",correct:true},
+          {label:"D",value:"10日",correct:false}
+        ],
+        explanation:"寝落ちした夜の余分な通電時間：\n8時間（自動オフ）− 5時間（通常使用）= 3時間\n\n1日あたりの切り忘れ電気代：\n200W × 3時間 = 600Wh = 0.6kWh\n0.6kWh × 30円 = 18円／日\n\n説明のつかない残り金額：\n1,800円 − 1,656円 = 144円\n\n144円 ÷ 18円 = 8日 が正解！\n\n【謎、完全解明】\nゲーム機の増加分　　　　→    36円\n電気カーペット通常使用　→   900円\nエアコン暖房の増加分　　→   720円\n切り忘れ分（8日）　　　 →   144円\n──────────────────────────────\n合計　　　　　　　　　　  1,800円　ぴったり！\n\n週末の寝落ちが月に8日。\n「自動オフがあるから大丈夫」と思っていても、\n使用後の残り時間が積み重なっていた。\n数字を追いかけることで、\n気づかなかった謎がはじめて見えてくる。"
+      }
+    ]
+  },
+  {
+    id:"okozukai", subtitle:"消えたおこづかいの謎〜イヤホンへの道〜", icon:"💰",
+    theme:"正負の数・方程式・不等式・割合", difficulty:"★★★",
+    story:"【大作戦・始動】\n───────────────────────────────\n中学1年生のミサキには、ずっと欲しいものがあった。\n定価 13,200円 のワイヤレスイヤホン。\n\n「絶対買う！春から本気で貯金するぞ！」\n\n4月、ミサキは家計簿アプリを使って\nお金の出入りを記録し始めた。\n\n  ┌──────────────────────────────┐\n  │ 毎月のおこづかい：  +2,000円  │\n  │ お年玉の残り（4月時点）：     │\n  │            最初の貯金 x 円    │\n  └──────────────────────────────┘\n\n【3か月の収支メモ】\n▶ 4月：おこづかい+2,000円、文房具を1,200円で購入\n▶ 5月：おこづかい+2,000円、友達の誕生日プレゼントを\n        買ったら残高が「ちょうど半分」に減った\n▶ 6月：おこづかい+2,000円、お手伝い報酬+800円、\n        コンビニで何回かジュースを買って出費\n\nそして6月末、貯金箱には 4,900円 だけが残っていた。\n\n「あれ…思ったより全然増えてない。\n どこかでお金が消えてる気がする…」\n\n5問の謎を解いて、ミサキのイヤホン購入を助けよう！\n\n──── お金の流れを、数学で追いかけろ！────",
+    questions:[
+      {
+        stage:"STEP 1", label:"正負の数で整理",
+        question:"まず4月の動きを正負の数で考えよう。\n4月のスタート時点の貯金を x 円とすると、\n4月のおこづかい(+2,000円)と文房具の購入(-1,200円)\nのあと、4月末の残高はどう表せる？",
+        hint:"収入は+(プラス)、支出は-(マイナス)。\n式を x を使って表してみよう。",
+        choices:[
+          {label:"A",value:"x + 800（円）",correct:true},
+          {label:"B",value:"x + 3,200（円）",correct:false},
+          {label:"C",value:"x − 800（円）",correct:false},
+          {label:"D",value:"x − 3,200（円）",correct:false}
+        ],
+        explanation:"x + 2,000 − 1,200 = x + 800（円）が正解！\n\n収入(+2,000)と支出(−1,200)をそのまま足し引きする。\n+2,000 − 1,200 = +800 なので、\n4月末の残高は「x + 800」円と表せるよ。"
+      },
+      {
+        stage:"STEP 2", label:"方程式を立てる",
+        question:"5月、おこづかい+2,000円が入った直後の残高は\n(x + 800) + 2,000 = x + 2,800（円）だった。\nそこからプレゼントを買い、残高がちょうど半分に\nなった。つまり5月末の残高は (x + 2,800) ÷ 2 円。\n\n実は5月末の残高は 2,900円 だったとわかっている。\n最初の貯金 x を求める方程式はどれ？",
+        hint:"「半分になった残高 = 2,900円」を式にしよう。\n両辺を2倍すると x が求めやすいよ。",
+        choices:[
+          {label:"A",value:"(x + 2,800) ÷ 2 = 2,900",correct:true},
+          {label:"B",value:"x + 2,800 = 2,900",correct:false},
+          {label:"C",value:"(x − 2,800) ÷ 2 = 2,900",correct:false},
+          {label:"D",value:"2x + 2,800 = 2,900",correct:false}
+        ],
+        explanation:"(x + 2,800) ÷ 2 = 2,900 が正解！\n\n「半分になった」= ÷2。それが2,900円なので\n(x + 2,800) ÷ 2 = 2,900\n\nこれを解くと：\nx + 2,800 = 5,800\nx = 3,000\n\n最初の貯金（お年玉の残り）は 3,000円 だったとわかる！"
+      },
+      {
+        stage:"STEP 3", label:"謎の解明",
+        question:"STEP2より、最初の貯金 x = 3,000円、\n5月末の残高は 2,900円 とわかった。\n\n6月の収支を整理しよう。\n▶ 5月末残高：  2,900円\n▶ おこづかい： +2,000円\n▶ お手伝い：   +  800円\n▶ ジュース代： −□円\n\nそして6月末の残高は 4,900円。\n\nミサキが6月に使ったジュース代の合計（□）は何円？\nなお、ミサキが買ったジュースは1本160円。\n何本買ったことになる？",
+        hint:"2,900 + 2,000 + 800 − □ = 4,900 を解いてから\n□ ÷ 160 で本数を求めよう。",
+        choices:[
+          {label:"A",value:"合計640円・4本",correct:false},
+          {label:"B",value:"合計800円・5本",correct:true},
+          {label:"C",value:"合計960円・6本",correct:false},
+          {label:"D",value:"合計1,120円・7本",correct:false}
+        ],
+        explanation:"2,900 + 2,000 + 800 − □ = 4,900\n5,700 − □ = 4,900\n□ = 800円 が正解！\n\n本数：800 ÷ 160 = 5本\n\n【謎の全貌】\nお年玉の残り（x）：3,000円\n4月末残高：3,800円\n5月末残高：2,900円（プレゼントで半分に）\n6月末残高：4,900円\n\nジュースを月に5本、合計800円使っていた。\n週1本以上のペース…これが「消えたおこづかい」の正体！\n小さな出費でも回数が重なると大きくなる。\n方程式を使えばちゃんと追いかけられるんだ。\n\nでもミサキは気持ちを切り替えた。\n「よし！これからジュースは我慢して、\nイヤホンのために本気で貯める！」"
+      },
+      {
+        stage:"STEP 4", label:"目標まで何ヶ月？",
+        question:"謎は解けた。ミサキは反省して7月から作戦を立てた。\n\n  ┌──────────────────────────────┐\n  │ 6月末の手持ち：    4,900円   │\n  │ 目標金額：        13,200円   │\n  │ 毎月のおこづかい：+2,000円   │\n  │ 毎月の節約（ジュース代など） │\n  │ を含めた純粋な貯金額：       │\n  │               毎月+1,500円   │\n  └──────────────────────────────┘\n\n7月からスタートして、毎月末に1,500円ずつ\n貯金が増えるとすると、何ヶ月後に\nはじめて 13,200円 に届く？",
+        hint:"4,900 + 1,500 × n >= 13,200 の不等式を解こう。\nn は月数（整数）だよ。",
+        choices:[
+          {label:"A",value:"5ヶ月後（12月末）",correct:false},
+          {label:"B",value:"6ヶ月後（1月末）",correct:true},
+          {label:"C",value:"7ヶ月後（2月末）",correct:false},
+          {label:"D",value:"8ヶ月後（3月末）",correct:false}
+        ],
+        explanation:"4,900 + 1,500 × n >= 13,200\n1,500n >= 8,300\nn >= 5.53…\n\nn は整数なので、n = 6 が正解！\n（5ヶ月後の残高は4,900+7,500=12,400円でまだ足りない）\n\n7月スタートの6ヶ月後 → 翌1月末に\n4,900 + 1,500×6 = 13,900円 になって\nはじめて13,200円を超える！"
+      },
+      {
+        stage:"STEP 5", label:"いよいよ購入！本当の金額は？",
+        question:"翌1月末、ミサキの手持ちは 13,900円 になった。\nいよいよイヤホンを買いに行くと…\nお店でうれしいお知らせを発見！\n\n  ┌──────────────────────────────┐\n  │ ★新春セール★                 │\n  │ 全商品 15%OFF クーポン配布中 │\n  │ ※消費税（10%）は別途かかります│\n  └──────────────────────────────┘\n\n定価 13,200円 のイヤホンに\nクーポンを使ったとき、実際に支払う金額は？\n\n① まず15%引きの値段を求め、\n② そこに消費税10%を加える。",
+        hint:"割引後の価格 = 13,200 × (1 − 0.15) = 13,200 × 0.85\nそこに×1.1で消費税を足そう。",
+        choices:[
+          {label:"A",value:"11,220円",correct:false},
+          {label:"B",value:"12,342円",correct:true},
+          {label:"C",value:"12,540円",correct:false},
+          {label:"D",value:"11,880円",correct:false}
+        ],
+        explanation:"① 15%引き後の価格\n13,200 × 0.85 = 11,220円\n\n② 消費税10%を加える\n11,220 × 1.1 = 12,342円 が正解！\n\n手持ち 13,900円 >= 支払い 12,342円\n→ 余裕で買える！おつりは 1,558円。\n\n【ミッション完了】\n4月から始まった貯金の旅、\n消えたお金の謎を解き、節約を続けた結果…\nミサキはついにイヤホンをゲット！\n数学が、夢を叶える力になった。"
+      }
+    ]
+  },
+  {
+    id:"pizza", subtitle:"ピザはどっちがお得？図形の罠", icon:"🍕",
+    theme:"円・おうぎ形・体積", difficulty:"★★★",
+    story:"【日曜日のランチ事件】\n───────────────────────────────\n中学1年生のリクは、家族でピザを注文する係。\nお店のメニューを見て、リクは悩んでいた。\n\n  ┌──────────────────────────────┐\n  │ 【Mサイズ】直径 20cm         │\n  │   1枚 …………… 1,200円        │\n  │                              │\n  │ 【Lサイズ】直径 30cm         │\n  │   1枚 …………… 2,400円        │\n  └──────────────────────────────┘\n\nお父さん「Lサイズは値段が2倍だけど、\n直径も1.5倍だから…どっちがお得なんだ？」\n\nお母さん「ピザの量は面積で考えなきゃね。」\n\nさらにお店の人がこう言った。\n「ピザは厚みが2cmの円柱だと思ってください。\nMも Lも厚みは同じ2cmですよ。」\n\nそしてメニューの端に、こんな表示が。\n\n  ★ Lサイズを6等分にカットします ★\n\n円周率は 3.14 として計算しよう。\n\n──── どっちが本当にお得か、図形で見抜け！────",
+    questions:[
+      {
+        stage:"STEP 1", label:"円の面積",
+        question:"まず、ピザの量を面積で比べよう。\nMサイズ（直径20cm）の表面の円の面積は何cm2？\n\n円の面積 = 半径 × 半径 × 円周率（3.14）\n直径20cmなら半径は10cmだね。",
+        hint:"半径は直径の半分。10 × 10 × 3.14 を計算しよう。",
+        choices:[
+          {label:"A",value:"314cm2",correct:true},
+          {label:"B",value:"628cm2",correct:false},
+          {label:"C",value:"1,256cm2",correct:false},
+          {label:"D",value:"62.8cm2",correct:false}
+        ],
+        explanation:"半径 = 20 ÷ 2 = 10cm\n10 × 10 × 3.14 = 314cm2 が正解！\n\n「直径」をそのまま使わないこと。\n円の面積は「半径 × 半径 × 3.14」だよ。"
+      },
+      {
+        stage:"STEP 2", label:"面積で比べる",
+        question:"Lサイズ（直径30cm）の円の面積は\n706.5cm2 になる（15×15×3.14）。\n\nここで「1cm2あたりの値段」を比べよう。\n・Mサイズ：1,200円 ÷ 314cm2 = 約3.82円/cm2\n・Lサイズ：2,400円 ÷ 706.5cm2 = 約?円/cm2\n\nLサイズの「1cm2あたりの値段」はおよそ何円？\n（お得なのはどっち？）",
+        hint:"2,400 ÷ 706.5 を計算。値段が安いほうがお得だよ。",
+        choices:[
+          {label:"A",value:"約3.40円/cm2（Lがお得）",correct:true},
+          {label:"B",value:"約7.64円/cm2（Mがお得）",correct:false},
+          {label:"C",value:"約3.82円/cm2（同じ）",correct:false},
+          {label:"D",value:"約1.70円/cm2（Lがお得）",correct:false}
+        ],
+        explanation:"2,400 ÷ 706.5 = 約3.40円/cm2 が正解！\n\nM：約3.82円/cm2\nL：約3.40円/cm2\n→ Lのほうが1cm2あたり安い＝お得！\n\n値段は2倍でも、直径1.5倍だと面積は\n1.5×1.5＝2.25倍に増える。だからLが得なんだ。"
+      },
+      {
+        stage:"STEP 3", label:"謎の解明",
+        question:"最後の謎。Lサイズ（直径30cm・厚さ2cm）を\n6等分にカットした、その「1切れ」の体積は何cm3？\n\nヒント：ピザ全体は円柱。\n円柱の体積 = 底面積 × 高さ\nLの底面積は 706.5cm2、厚さ（高さ）は2cm。\nそれを6等分する。",
+        hint:"まず円柱全体の体積（706.5 × 2）を求め、6で割ろう。",
+        choices:[
+          {label:"A",value:"約235.5cm3",correct:true},
+          {label:"B",value:"約117.75cm3",correct:false},
+          {label:"C",value:"約1,413cm3",correct:false},
+          {label:"D",value:"約706.5cm3",correct:false}
+        ],
+        explanation:"円柱全体の体積 = 706.5 × 2 = 1,413cm3\n6等分なので 1,413 ÷ 6 = 235.5cm3 が正解！\n\n【謎の全貌】\n・お得なのはLサイズ（面積=量で考えるのがカギ）\n・1切れは扇形を底面とする立体で、約235.5cm3\n\n「値段の比」ではなく「面積・体積の比」で\n考えると、本当のお得が見えてくる。\n図形は日常の選択にも役立つ武器だ！"
+      }
+    ]
+  },
+  {
+    id:"q4", subtitle:"どっちのプランがお得？スマホ料金の罠", icon:"📱",
+    theme:"比例・反比例", difficulty:"★★★",
+    story:"お母さんからついに許可が出た。\n「ハルカ、来月からスマホを持っていいよ。でも料金プランは自分で選びなさい。」\n\nハルカは毎日YouTubeを1時間見るつもりだ。\n画質は標準画質（480p）で、1時間あたり約0.5GB使うらしい。\n1ヶ月30日で計算すると…いったい何GBになるんだろう？\n\n数字と向き合って、一番お得なプランを見つけ出せ！",
+    questions:[
+      {
+        stage:"STEP 1", label:"画質が違うと何GB変わる？",
+        question:"ハルカは毎日YouTubeを1時間見るつもりだ。\n標準画質（480p）では1時間あたり約0.5GBのデータを使う。\n\nところで、ハルカのお父さんは「YouTubeは画質を上げると通信量がグッと増えるぞ」と言っていた。\nもしハルカが標準画質（0.5GB/時間）ではなく、高画質（HD・1080p＝2GB/時間）で毎日1時間見た場合、\n1ヶ月（30日）の使用量は標準画質と比べて何GB多くなるか？",
+        hint:"それぞれの画質で1ヶ月分の使用量を計算して、その差を求めてみよう。",
+        choices:[
+          {label:"A",value:"30GB",correct:false},
+          {label:"B",value:"40GB",correct:false},
+          {label:"C",value:"45GB",correct:true},
+          {label:"D",value:"60GB",correct:false}
+        ],
+        explanation:"標準画質：0.5GB×30日＝15GB\n高画質（HD）：2GB×30日＝60GB\n差は 60－15＝45GB。\n\n画質を上げるだけでこんなに差が出るんだ！\nハルカは標準画質（15GB/月）で使うことにした。\nこの15GBをもとに、次は料金を計算していこう。"
+      },
+      {
+        stage:"STEP 2", label:"プランAで計算してみよう",
+        question:"ハルカが最初に目をつけたのはプランAだ。\n「基本料が一番安いし、これでいいじゃん！」\n——でも本当にそうだろうか？\n\n・プランA：基本料800円＋使った分だけ200円/GB\n\n標準画質で毎日1時間、1ヶ月15GB使ったとき、プランAの月額料金はいくらになるか？",
+        hint:"基本料と、使用量にかかる料金を別々に計算して足してみよう。",
+        choices:[
+          {label:"A",value:"2,800円",correct:false},
+          {label:"B",value:"3,000円",correct:false},
+          {label:"C",value:"3,500円",correct:false},
+          {label:"D",value:"3,800円",correct:true}
+        ],
+        explanation:"使用量にかかる料金：200円×15GB＝3,000円\n基本料を足すと：800＋3,000＝3,800円。\n他にもっといいプランはないだろうか？"
+      },
+      {
+        stage:"STEP 3", label:"3つのプランを比べて最安を探せ！",
+        question:"さらに調べると、あと2つのプランが見つかった。\n\n・プランB：月額2,000円・8GBまで込み／8GB超過分は150円/GB追加\n・プランC：月額3,200円で使い放題\n\n15GB使ったとき、3つのプランの中でハルカに一番お得なのはどれか？",
+        hint:"プランBの料金を計算してみよう。8GBを超えた分（7GB）に150円をかけて、月額2,000円に足すといくらになる？",
+        choices:[
+          {label:"A",value:"プランA（3,800円）",correct:false},
+          {label:"B",value:"プランB",correct:true},
+          {label:"C",value:"プランC（3,200円）",correct:false},
+          {label:"D",value:"わからないので契約しない",correct:false}
+        ],
+        explanation:"まずプランBを計算しよう。\n超過分：15－8＝7GB\n追加料金：7×150円＝1,050円\n合計：2,000＋1,050＝3,050円\n\n3プランを並べると…\n\n🥇 プランB：3,050円 ← これが正解！\n🥈 プランC：3,200円（差額わずか150円…惜しい！）\n🥉 プランA：3,800円\n\n「基本料が安いから！」と飛びついたプランA、実は一番高かった。基本料だけ見て決めると痛い目を見るぞ！😅\n\n……でも、ちょっと待てよ。\n\nプランBとプランCの差はたった150円。\nあと1GBでも使用量が増えたら、あっという間に逆転する。\n\nスマホの料金プランは「今の使い方」だけじゃなく\n「これからの使い方」も考えて選ぶのが本当の正解かもしれない。"
+      }
+    ]
+  }
+];
+
+// ---------- state ----------
+let phase="select", qIdx=0, cur=0, sel=null, confirmed=false, answers=[], showHint=false;
+
+function quiz(){ return Q[qIdx]; }
+function question(){ return quiz().questions[cur]; }
+function total(){ return quiz().questions.length; }
+function score(){ return answers.filter(Boolean).length; }
+
+// ---------- render ----------
+function render(){
+  const wrap=document.getElementById("wrap");
+  wrap.classList.remove("in");
+  wrap.classList.add("out");
+  setTimeout(()=>{
+    wrap.innerHTML=buildHTML();
+    wrap.classList.remove("out");
+    wrap.classList.add("in");
+    bindEvents();
+  },50);
+}
+
+function buildHTML(){
+  const header=`
+    <div class="header">
+      <div class="badge">🔍 Math Mystery</div>
+      <h1 class="main-title">謎解き数学ミッション</h1>
+    </div>`;
+  if(phase==="select") return header+buildSelect();
+  if(phase==="intro")  return header+buildIntro();
+  if(phase==="quiz")   return header+buildQuiz();
+  if(phase==="result") return header+buildResult();
+  return "";
+}
+
+function buildSelect(){
+  const cards=Q.map((q,i)=>`
+    <div class="quiz-card" data-start="${i}">
+      <div class="quiz-icon">${q.icon}</div>
+      <div class="quiz-info">
+        <div class="quiz-card-title">${q.subtitle}</div>
+        <div class="quiz-meta">
+          <span class="meta-tag">${q.theme}</span>
+          <span>難易度 ${q.difficulty}</span>
+          <span>全${q.questions.length}問</span>
+        </div>
+      </div>
+      <div class="quiz-arrow">›</div>
+    </div>`).join("");
+  return `<p class="select-intro">挑戦する事件を選ぼう。<br>長い物語を読み解き、数段階の謎を解いて真相にたどり着け！</p>${cards}`;
+}
+
+function buildIntro(){
+  return `
+    <button class="back-btn" id="back">‹ 問題選択にもどる</button>
+    <div class="story-card"><pre class="story-pre">${esc(quiz().story)}</pre></div>
+    <button class="start-btn" id="start">▶ 謎解きスタート！</button>`;
+}
+
+function buildQuiz(){
+  const q=question();
+  const pct=((cur+(confirmed?1:0))/total())*100;
+  const choicesHTML=q.choices.map(c=>{
+    let cls="choice-btn";
+    if(confirmed){
+      if(c.correct) cls+=" correct";
+      else if(sel===c.label) cls+=" wrong";
+    } else if(sel===c.label) cls+=" selected";
+    const dotTxt=confirmed&&c.correct?"✓":confirmed&&sel===c.label&&!c.correct?"✗":c.label;
+    return `<button class="${cls}" data-choice="${c.label}" ${confirmed?"disabled":""}>
+      <span class="choice-dot">${dotTxt}</span><span>${esc(c.value)}</span>
+    </button>`;
+  }).join("");
+  const hintHTML=showHint&&!confirmed?`<div class="hint-box">💡 ヒント：${esc(q.hint)}</div>`:"";
+  const hintBtnHTML=!confirmed?`<button class="hint-btn" id="hint-btn">${showHint?"▲ ヒントを隠す":"💡 ヒントを見る"}</button>`:"";
+  let feedbackHTML="";
+  if(confirmed){
+    const last=answers[answers.length-1];
+    if(!last) feedbackHTML+=`<div class="wrong-msg">❌ 不正解… でも大丈夫！解説を読もう。</div>`;
+    feedbackHTML+=`<div class="explanation">${last?"✅ 正解！\n\n":""}${esc(q.explanation)}</div>`;
+    const nextLabel=cur+1<total()?"▶ 次の問題へ":"🏁 結果を見る";
+    feedbackHTML+=`<button class="next-btn" id="next">${nextLabel}</button>`;
+  }
+  const confirmLabel=sel?"✅ この答えで決定！":"選択してください";
+  const confirmCls="confirm-btn"+(sel?" ready":" waiting");
+  return `
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="stage-tag">🔬 ${q.stage} / ${total()}問中 ${cur+1}問目 ― ${q.label}</div>
+    <div class="q-card">
+      <div class="q-label">【問題】</div>
+      <pre class="q-text">${esc(q.question)}</pre>
+      ${hintBtnHTML}${hintHTML}
+    </div>
+    <div class="choices">${choicesHTML}</div>
+    ${!confirmed?`<button class="${confirmCls}" id="confirm">${confirmLabel}</button>`:""}
+    ${feedbackHTML}`;
+}
+
+function buildResult(){
+  const dots=answers.map(ok=>`<div class="dot ${ok?"ok":"ng"}">${ok?"✓":"✗"}</div>`).join("");
+  const pct=score()/total();
+  let msg="";
+  if(pct===1) msg="🎉 パーフェクト！\n謎を完全解明！\n君は数学探偵マスターだ！";
+  else if(pct>=0.6) msg=`👍 ${score()}問正解！\n数学の力は十分。\n計算の手順をもう一度確認してみよう。`;
+  else if(pct>=0.4) msg=`💪 ${score()}問正解。\nもう一度チャレンジしてみよう！`;
+  else msg="🔁 まだまだこれから！\nでも大丈夫！\n解説を読んで、もう一度挑戦しよう！";
+  return `
+    <div class="result-card">
+      <div style="font-size:40px">${quiz().icon}</div>
+      <div class="result-label">MISSION RESULT</div>
+      <div class="score">${score()}/${total()}</div>
+      <div class="dots">${dots}</div>
+      <p class="result-msg">${esc(msg)}</p>
+      <div class="btn-row">
+        <button class="retry-btn" id="retry">🔄 もう一度</button>
+        <button class="sel-btn" id="to-select">📋 問題を選ぶ</button>
+      </div>
+    </div>`;
+}
+
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// ---------- events ----------
+function bindEvents(){
+  // select
+  document.querySelectorAll("[data-start]").forEach(el=>{
+    el.addEventListener("click",()=>startQuiz(+el.dataset.start));
+  });
+  // intro
+  const back=document.getElementById("back");
+  if(back) back.addEventListener("click",()=>{ phase="select"; render(); });
+  const start=document.getElementById("start");
+  if(start) start.addEventListener("click",()=>{ phase="quiz"; render(); });
+  // quiz
+  document.querySelectorAll("[data-choice]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      if(confirmed) return;
+      sel=el.dataset.choice;
+      render();
+    });
+  });
+  const hint=document.getElementById("hint-btn");
+  if(hint) hint.addEventListener("click",()=>{ showHint=!showHint; render(); });
+  const conf=document.getElementById("confirm");
+  if(conf) conf.addEventListener("click",()=>{
+    if(!sel) return;
+    const correct=question().choices.find(c=>c.label===sel).correct;
+    answers.push(correct);
+    confirmed=true;
+    render();
+  });
+  const next=document.getElementById("next");
+  if(next) next.addEventListener("click",()=>{
+    if(cur+1<total()){ cur++; sel=null; confirmed=false; showHint=false; render(); }
+    else { phase="result"; render(); }
+  });
+  // result
+  const retry=document.getElementById("retry");
+  if(retry) retry.addEventListener("click",()=>startQuiz(qIdx));
+  const toSel=document.getElementById("to-select");
+  if(toSel) toSel.addEventListener("click",()=>{ phase="select"; render(); });
+}
+
+function startQuiz(i){
+  qIdx=i; cur=0; sel=null; confirmed=false; answers=[]; showHint=false;
+  phase="intro"; render();
+}
+
+render();
+</script>
+</body>
+</html>
