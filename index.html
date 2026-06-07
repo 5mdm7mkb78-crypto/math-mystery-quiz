@@ -52,7 +52,7 @@ body{
 .hint-btn{background:transparent;border:1px dashed #64748b;color:#64748b;font-size:12px;padding:6px 16px;border-radius:8px;cursor:pointer;margin-top:12px;font-family:inherit;}
 .hint-box{margin-top:12px;padding:12px 16px;background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.27);border-radius:10px;font-size:13px;color:#ffd700;white-space:pre-wrap;}
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-.choice-btn{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:12px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;color:#e2e8f0;font-family:inherit;font-size:14px;text-align:left;width:100%;}
+.choice-btn{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:12px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color .2s,background .2s,color .2s;color:#e2e8f0;font-family:inherit;font-size:14px;text-align:left;width:100%;}
 .choice-btn:hover:not([disabled]){border-color:#00d4ff;background:rgba(0,212,255,.1);}
 .choice-btn.selected{background:rgba(0,212,255,.13);border-color:#00d4ff;color:#00d4ff;font-weight:700;}
 .choice-btn.correct{background:rgba(34,197,94,.13);border-color:#22c55e;color:#22c55e;font-weight:700;}
@@ -129,68 +129,44 @@ const Q = [
   },
   {
     id:"okozukai", subtitle:"消えたおこづかいの謎\n〜イヤホンへの道〜", icon:"💰",
-    theme:"正負の数・方程式・不等式・割合", difficulty:"★★★",
-    story:"【大作戦・始動】\n\n中学1年生のミサキには、ずっと欲しいものがあった。\n定価 13,200円 のワイヤレスイヤホン。\n\n「絶対買う！春から本気で貯金するぞ！」\n\n4月、ミサキは家計簿アプリを使って\nお金の出入りを記録し始めた。\n\n  毎月のおこづかい：  +2,000円\n  お年玉の残り（4月時点）：最初の貯金 x 円\n\n【3か月の収支メモ】\n▶ 4月：おこづかい+2,000円、文房具を1,200円で購入\n▶ 5月：おこづかい+2,000円、友達の誕生日プレゼントを\n        買ったら残高が「ちょうど半分」に減った\n▶ 6月：おこづかい+2,000円、お手伝い報酬+800円、\n        コンビニで何回かジュースを買って出費\n\nそして6月末、貯金箱には 4,900円 だけが残っていた。\n\n「あれ…思ったより全然増えてない。\n どこかでお金が消えてる気がする…」\n\n5問の謎を解いて、ミサキのイヤホン購入を助けよう！\n\nお金の流れを、数学で追いかけろ！",
+    theme:"文字式・正負の数・不等式", difficulty:"★★★",
+    story:"【大作戦・始動】\n\n中学1年生になったミサキには、ずっと欲しいものがあった。\n定価 6,800円 のワイヤレスイヤホン。\n\n「また月末にカツカツだ…」が口癖のミサキ。\nいつも気づいたら消えてる。\n\n「今度こそ本気で貯める！」\n\nお金の流れを、数学で追いかけろ！",
     questions:[
       {
-        stage:"STEP 1", label:"正負の数で整理",
-        question:"まず4月の動きを正負の数で考えよう。\n4月のスタート時点の貯金を x 円とすると、\n4月のおこづかい(+2,000円)と文房具の購入(-1,200円)\nのあと、4月末の残高はどう表せる？",
-        hint:"収入は+(プラス)、支出は-(マイナス)。\n式を x を使って表してみよう。",
+        stage:"STEP 1", label:"皮算用・貯金シミュレーション",
+        question:"「今度こそ絶対貯める！」\n\nミサキは4月末の時点で 1,800円 持っている。\n毎月のおこづかいは 1,500円。\n何も買わずに全額貯金し続けたら、\nX ヶ月後の残高 Y 円はどんな式で表せる？\n\n…と考えていたところ、お母さんから一言。\n\n「そういえばミサキ、3月末に言い忘れてたけど、\n　今月からおこづかい 500円 上げるつもりよ。」\n\n正しい式はどれ？",
+        hint:"月額は1,500円ではなく、アップ後の金額で考えよう。\nY = 今の残高 + 月額 × X",
         choices:[
-          {label:"A",value:"x + 800（円）",correct:true},
-          {label:"B",value:"x + 3,200（円）",correct:false},
-          {label:"C",value:"x − 800（円）",correct:false},
-          {label:"D",value:"x − 3,200（円）",correct:false}
+          {label:"A",value:"Y = 1,800 + 1,500 × X",correct:false},
+          {label:"B",value:"Y = 1,800 + 500 × X",correct:false},
+          {label:"C",value:"Y = 2,000 + 1,800 × X",correct:false},
+          {label:"D",value:"Y = 1,800 + 2,000 × X",correct:true}
         ],
-        explanation:"x + 2,000 − 1,200 = x + 800（円）が正解！\n\n収入(+2,000)と支出(−1,200)をそのまま足し引きする。\n+2,000 − 1,200 = +800 なので、\n4月末の残高は「x + 800」円と表せるよ。"
+        explanation:"月額 1,500 + 500 = 2,000円。\nY = 1,800 + 2,000 × X が正解！\n\nさて、何も買わなければの話だけど…\nX = 4 を代入すると\nY = 1,800 + 2,000 × 4 = 9,800円。\n4ヶ月でイヤホンが買えそうだ！\n\n…何も買わなければ、の話。"
       },
       {
-        stage:"STEP 2", label:"方程式を立てる",
-        question:"5月、おこづかい+2,000円が入った直後の残高は\n(x + 800) + 2,000 = x + 2,800（円）だった。\nそこからプレゼントを買い、残高がちょうど半分に\nなった。つまり5月末の残高は (x + 2,800) ÷ 2 円。\n\n実は5月末の残高は 2,900円 だったとわかっている。\n最初の貯金 x を求める方程式はどれ？",
-        hint:"「半分になった残高 = 2,900円」を式にしよう。\n両辺を2倍すると x が求めやすいよ。",
+        stage:"STEP 2", label:"消えたお金を追え",
+        question:"「何も買わなければ」…とはいかなかった。\n\n3月末残高 1,800円 を起点に、\n最初から記録をさぼってしまい、\n覚えている収支はこれだけ：\n\n▶ おこづかい（月額2,000円）\n▶ 4月：マンガ1冊            −  500円\n▶ 4月：おばあちゃんのお小遣い  +1,000円\n▶ 4月：キャラクターグッズ     −1,200円\n▶ 5月：シャーペン            −  300円\n\nそして5月末、残高を確認したら 3,300円 だった。\n\n記録にない支出がある。それはいくら？",
+        hint:"収入と支出をそれぞれ合計してみよう。\n収入合計 − 支出合計 = 記録上の増減\n1,800 + 記録上の増減 − □ = 3,300",
         choices:[
-          {label:"A",value:"(x + 2,800) ÷ 2 = 2,900",correct:true},
-          {label:"B",value:"x + 2,800 = 2,900",correct:false},
-          {label:"C",value:"(x − 2,800) ÷ 2 = 2,900",correct:false},
-          {label:"D",value:"2x + 2,800 = 2,900",correct:false}
+          {label:"A",value:"800円",correct:false},
+          {label:"B",value:"1,000円",correct:false},
+          {label:"C",value:"1,500円",correct:true},
+          {label:"D",value:"2,000円",correct:false}
         ],
-        explanation:"(x + 2,800) ÷ 2 = 2,900 が正解！\n\n「半分になった」= ÷2。それが2,900円なので\n(x + 2,800) ÷ 2 = 2,900\n\nこれを解くと：\nx + 2,800 = 5,800\nx = 3,000\n\n最初の貯金（お年玉の残り）は 3,000円 だったとわかる！"
+        explanation:"収入合計：2,000 × 2 + 1,000 = 5,000円\n支出合計：500 + 1,200 + 300 = 2,000円\n記録上の増減：5,000 − 2,000 = +3,000円\n\n1,800 + 3,000 − □ = 3,300\n4,800 − □ = 3,300\n□ = 1,500円 が正解！\n\n「え…何に使ったんだっけ？」\n\nミサキはしばらく考えて、ふと顔を上げた。\n部屋の棚の上に、でかいぬいぐるみ。\n\n…あ。ゲーセンだ。\nクレーンゲーム、500円を3回。\n全然取れなかったやつ。\n\n楽しかったのは覚えてるけど、\n出費を完全に忘れてた。"
       },
       {
-        stage:"STEP 3", label:"謎の解明",
-        question:"STEP2より、最初の貯金 x = 3,000円、\n5月末の残高は 2,900円 とわかった。\n\n6月の収支を整理しよう。\n▶ 5月末残高：  2,900円\n▶ おこづかい： +2,000円\n▶ お手伝い：   +  800円\n▶ ジュース代： −□円\n\nそして6月末の残高は 4,900円。\n\nミサキが6月に使ったジュース代の合計（□）は何円？\nなお、ミサキが買ったジュースは1本160円。\n何本買ったことになる？",
-        hint:"2,900 + 2,000 + 800 − □ = 4,900 を解いてから\n□ ÷ 160 で本数を求めよう。",
+        stage:"STEP 3", label:"イヤホンへの道",
+        question:"謎は解けた。ミサキは6月から仕切り直しを決意した。\n\n「おこづかいは全額貯金する！」\n\n  5月末の手持ち：    3,300円\n  毎月の貯金額：   +2,000円\n  目標：定価 6,800円 のイヤホン\n  ※消費税10%が別途かかります\n\n毎月2,000円ずつ貯金して、\n買うことができるのは何ヶ月後？",
+        hint:"まず税込み価格を求めよう。\n6,800 × 1.1 = ?\nそのあと不等式を解いてnを求めよう。\n3,300 + 2,000 × n ≧ 税込み価格",
         choices:[
-          {label:"A",value:"合計640円・4本",correct:false},
-          {label:"B",value:"合計800円・5本",correct:true},
-          {label:"C",value:"合計960円・6本",correct:false},
-          {label:"D",value:"合計1,120円・7本",correct:false}
+          {label:"A",value:"1ヶ月後（6月）",correct:false},
+          {label:"B",value:"2ヶ月後（7月）",correct:false},
+          {label:"C",value:"3ヶ月後（8月）",correct:true},
+          {label:"D",value:"4ヶ月後（9月）",correct:false}
         ],
-        explanation:"2,900 + 2,000 + 800 − □ = 4,900\n5,700 − □ = 4,900\n□ = 800円 が正解！\n\n本数：800 ÷ 160 = 5本\n\n【謎の全貌】\nお年玉の残り（x）：3,000円\n4月末残高：3,800円\n5月末残高：2,900円（プレゼントで半分に）\n6月末残高：4,900円\n\nジュースを月に5本、合計800円使っていた。\n週1本以上のペース…これが「消えたおこづかい」の正体！\n小さな出費でも回数が重なると大きくなる。\n方程式を使えばちゃんと追いかけられるんだ。\n\nでもミサキは気持ちを切り替えた。\n「よし！これからジュースは我慢して、\nイヤホンのために本気で貯める！」"
-      },
-      {
-        stage:"STEP 4", label:"目標まで何ヶ月？",
-        question:"謎は解けた。ミサキは反省して7月から作戦を立てた。\n\n  6月末の手持ち：    4,900円\n  目標金額：        13,200円\n  毎月のおこづかい： +2,000円\n  毎月の節約（ジュース代など）を含めた純粋な貯金額：毎月+1,500円\n\n7月からスタートして、毎月末に1,500円ずつ\n貯金が増えるとすると、何ヶ月後に\nはじめて 13,200円 に届く？",
-        hint:"4,900 + 1,500 × n >= 13,200 の不等式を解こう。\nn は月数（整数）だよ。",
-        choices:[
-          {label:"A",value:"5ヶ月後（12月末）",correct:false},
-          {label:"B",value:"6ヶ月後（1月末）",correct:true},
-          {label:"C",value:"7ヶ月後（2月末）",correct:false},
-          {label:"D",value:"8ヶ月後（3月末）",correct:false}
-        ],
-        explanation:"4,900 + 1,500 × n >= 13,200\n1,500n >= 8,300\nn >= 5.53…\n\nn は整数なので、n = 6 が正解！\n（5ヶ月後の残高は4,900+7,500=12,400円でまだ足りない）\n\n7月スタートの6ヶ月後 → 翌1月末に\n4,900 + 1,500×6 = 13,900円 になって\nはじめて13,200円を超える！"
-      },
-      {
-        stage:"STEP 5", label:"いよいよ購入！本当の金額は？",
-        question:"翌1月末、ミサキの手持ちは 13,900円 になった。\nいよいよイヤホンを買いに行くと…\nお店でうれしいお知らせを発見！\n\n  ★新春セール★\n  全商品 15%OFF クーポン配布中\n  ※消費税（10%）は別途かかります\n\n定価 13,200円 のイヤホンに\nクーポンを使ったとき、実際に支払う金額は？\n\n① まず15%引きの値段を求め、\n② そこに消費税10%を加える。",
-        hint:"割引後の価格 = 13,200 × (1 − 0.15) = 13,200 × 0.85\nそこに×1.1で消費税を足そう。",
-        choices:[
-          {label:"A",value:"11,220円",correct:false},
-          {label:"B",value:"12,342円",correct:true},
-          {label:"C",value:"12,540円",correct:false},
-          {label:"D",value:"11,880円",correct:false}
-        ],
-        explanation:"① 15%引き後の価格\n13,200 × 0.85 = 11,220円\n\n② 消費税10%を加える\n11,220 × 1.1 = 12,342円 が正解！\n\n手持ち 13,900円 >= 支払い 12,342円\n→ 余裕で買える！おつりは 1,558円。\n\n【ミッション完了】\n4月から始まった貯金の旅、\n消えたお金の謎を解き、節約を続けた結果…\nミサキはついにイヤホンをゲット！\n数学が、夢を叶える力になった。"
+        explanation:"税込み価格：6,800 × 1.1 = 7,480円\n\n3,300 + 2,000 × n ≧ 7,480\n2,000n ≧ 4,180\nn ≧ 2.09…\n\nn は整数なので n = 3、3ヶ月後（8月）が正解！\n\n  8月の手持ち：3,300 + 2,000 × 3 = 9,300円\n  税込み価格　：7,480円\n\n…でも、ひとつだけ気になることがある。\n\nあの1,500円がなければ、\n5月の手持ちは 4,800円 だった。\n\n4,800 + 2,000 × n ≧ 7,480\nn ≧ 1.34…  → n = 2、2ヶ月後（7月）。\n\nクレーンゲームが、\nイヤホンを1ヶ月遠ざけたのでした。"
       }
     ]
   },
