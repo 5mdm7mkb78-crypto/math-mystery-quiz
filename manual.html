@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>謎解き数学アプリ 作業マニュアル</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0d1525;
+    --bg3: #111c2e;
+    --cyan: #00d4ff;
+    --cyan-dim: rgba(0,212,255,0.12);
+    --orange: #ff6b35;
+    --gold: #ffd700;
+    --green: #22c55e;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #7a8fa6;
+    --border: rgba(0,212,255,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: radial-gradient(ellipse at 20% 20%, #0d2137, #0a0e1a);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  header {
+    text-align: center;
+    padding: 56px 24px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.08), transparent 70%);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--cyan);
+    border: 1px solid var(--border);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 900;
+    letter-spacing: .05em;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  header h1 span { color: var(--cyan); }
+  header p { font-size: 13px; color: var(--text-dim); }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .section { margin-bottom: 48px; }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .15em;
+    color: var(--cyan);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title .icon {
+    width: 28px; height: 28px;
+    background: var(--cyan-dim);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  /* 凡例 */
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .legend-dot.claude { background: var(--cyan); }
+  .legend-dot.you    { background: var(--green); }
+  .legend-dot.github { background: var(--gold); }
+
+  /* フロー */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .flow-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+  }
+  .flow-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 44px;
+    bottom: -8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--border), transparent);
+  }
+  .flow-num {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .flow-num.claude { background: rgba(0,212,255,0.15);  color: var(--cyan);   border: 1px solid var(--cyan); }
+  .flow-num.you    { background: rgba(34,197,94,0.15);  color: var(--green);  border: 1px solid var(--green); }
+  .flow-num.github { background: rgba(255,215,0,0.12);  color: var(--gold);   border: 1px solid var(--gold); }
+
+  .flow-body {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    flex: 1;
+  }
+  .flow-body h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .flow-body p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.9;
+  }
+  .flow-body ul {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.9;
+    padding-left: 18px;
+    margin-top: 4px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .tag.claude { background: rgba(0,212,255,0.15); color: var(--cyan); }
+  .tag.you    { background: rgba(34,197,94,0.15);  color: var(--green); }
+  .tag.github { background: rgba(255,215,0,0.12);  color: var(--gold); }
+
+  /* コピーボックス */
+  .copy-box {
+    background: #060a12;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 48px 14px 16px;
+    margin-top: 10px;
+    position: relative;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #a8c0d6;
+    white-space: pre-wrap;
+    line-height: 1.8;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--cyan-dim);
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-size: 11px;
+    font-family: 'Noto Sans JP', sans-serif;
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  .copy-btn:hover { background: rgba(0,212,255,0.25); }
+  .copy-btn.copied { color: var(--green); border-color: var(--green); background: rgba(34,197,94,0.1); }
+
+  /* アラート */
+  .alert {
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    line-height: 1.8;
+  }
+  .alert.warn { background: rgba(255,107,53,0.1);  border: 1px solid rgba(255,107,53,0.3); color: #ffb89a; }
+  .alert.tip  { background: rgba(0,212,255,0.08);  border: 1px solid var(--border);        color: var(--text-dim); }
+  .alert.good { background: rgba(34,197,94,0.1);   border: 1px solid rgba(34,197,94,0.3);  color: #86efac; }
+  .alert .al-icon { font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ファイル構成 */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .info-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .info-card h4 {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: .1em;
+    margin-bottom: 8px;
+  }
+  .info-card code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    background: var(--cyan-dim);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 4px;
+    word-break: break-all;
+  }
+  .info-card p {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 5px;
+  }
+
+  /* 担当分担表 */
+  .role-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .role-table th {
+    background: var(--bg3);
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: .1em;
+    font-weight: 700;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .role-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+    color: var(--text);
+  }
+  .role-table tr:last-child td { border-bottom: none; }
+
+  footer {
+    text-align: center;
+    padding: 32px;
+    font-size: 12px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+  }
+
+  @media(max-width:600px){
+    .copy-box { font-size: 11px; }
+    .legend { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">WORKFLOW MANUAL v2.0</div>
+  <h1>謎解き数学アプリ<br><span>作業マニュアル</span></h1>
+  <p>問題設計 → 動作確認 → GitHubデプロイまでの完全ガイド</p>
+</header>
+
+<main>
+
+  <!-- ファイル構成 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📁</span>作業場所とファイル構成</div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h4>ローカル作業フォルダ</h4>
+        <code>\OneDrive\ドキュメント\Cowork\math-mystery-quiz\</code>
+      </div>
+      <div class="info-card">
+        <h4>本番ファイル</h4>
+        <code>index.html</code>
+        <p>GitHub Pages に自動デプロイ済み</p>
+      </div>
+      <div class="info-card">
+        <h4>下書きフォルダ</h4>
+        <code>drafts/draft_YYYYMMDD.html</code>
+        <p>作業中の確認用ファイル置き場</p>
+      </div>
+      <div class="info-card">
+        <h4>指示書・ルール</h4>
+        <code>INSTRUCTIONS.md</code>
+        <code>REVIEW_RULES.md</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- フロー -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔄</span>作業フロー全体像</div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot claude"></div>Claude（問題設計・コード生成）</div>
+      <div class="legend-item"><div class="legend-dot you"></div>あなた（確認・保存・プッシュ）</div>
+      <div class="legend-item"><div class="legend-dot github"></div>GitHub（自動デプロイ）</div>
+    </div>
+
+    <div class="flow">
+
+      <!-- STEP 1 -->
+      <div class="flow-item">
+        <div class="flow-num claude">1</div>
+        <div class="flow-body">
+          <h3><span class="tag claude">Claude</span>新しいチャットを作成・指示書を読み込ませる</h3>
+          <p>claude.ai で新しいチャットを開き、以下の2ファイルをアップロードして読み込ませる。</p>
+          <ul>
+            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">INSTRUCTIONS.md</code> — アプリ仕様・問題構造・作業ルール</li>
+            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">REVIEW_RULES.md</code> — 問題品質チェックルール</li>
+          </ul>
+          <div class="copy-box">INSTRUCTIONS.mdとREVIEW_RULES.mdを読み込みました。
+新しい問題を一緒に設計してください。<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
+          <div class="alert tip">
+            <span class="al-icon">💡</span>
+            <span>問題を追加するたびに新しいチャットを作成し、毎回2ファイルを読み込ませること。前回のチャットの続きでは指示書の内容が薄れる場合がある。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="flow-item">
+        <div class="flow-num claude">2</div>
+        <div class="flow-body">
+          <h3><span class="tag claude">Claude</span>問題の設計・レビュー・index.html生成</h3>
+          <p>Claudeとの対話で以下を順番に進める。</p>
+          <ul>
+            <li>対象レベルの確認（例：LEVEL. 小学校高学年）</li>
+            <li>テーマ・ストーリー・STEP数の設計</li>
+            <li>各STEPの問題文・選択肢・解説の設計と検算</li>
+            <li>REVIEW_RULESに基づく品質チェック</li>
+            <li>設計確定後、index.htmlの更新版をファイルとして出力</li>
+          </ul>
+          <div class="alert tip">
+            <span class="al-icon">💡</span>
+            <span>設計が確定したら「index.htmlを更新したファイルを出力してください」と依頼する。Claudeが新しい問題を追加済みのindex.htmlをまるごと生成する。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="flow-item">
+        <div class="flow-num you">3</div>
+        <div class="flow-body">
+          <h3><span class="tag you">あなた</span>ローカルフォルダに上書き保存・動作確認</h3>
+          <p>Claudeが出力したindex.htmlをダウンロードし、ローカルフォルダに上書き保存する。</p>
+          <code style="display:block;font-family:monospace;font-size:12px;color:var(--cyan);background:var(--cyan-dim);padding:8px 12px;border-radius:6px;margin:8px 0">\OneDrive\ドキュメント\Cowork\math-mystery-quiz\index.html</code>
+          <p>上書き後、ブラウザで開いて以下を確認する。</p>
+          <ul>
+            <li>問題選択画面に新問題が正しいレベルで表示されるか</li>
+            <li>ストーリー → 問題 → 解説の流れが正しいか</li>
+            <li>正解・不正解が正しく判定されるか</li>
+            <li>スマホ表示で横スクロールが出ていないか</li>
+          </ul>
+          <div class="alert warn">
+            <span class="al-icon">⚠️</span>
+            <span>動作確認が完了するまでGitHubにプッシュしないこと。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="flow-item">
+        <div class="flow-num you">4</div>
+        <div class="flow-body">
+          <h3><span class="tag you">あなた</span>GitHubにコミット・プッシュ</h3>
+          <p>index.htmlをGitHubにプッシュする。</p>
+          <ul>
+            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">index.html</code></li>
+          </ul>
+          <p style="margin-top:8px">コミットメッセージの例：</p>
+          <div class="copy-box">【問題追加】おじいちゃんの秘密のメッセージ（LEVEL. 小学校高学年）<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="flow-item">
+        <div class="flow-num github">5</div>
+        <div class="flow-body">
+          <h3><span class="tag github">GitHub</span>Pages に自動反映・最終確認</h3>
+          <p>プッシュ後1〜2分でGitHub Pagesに自動デプロイされる。<br>
+          公開URLをブラウザで開いて最終確認する。</p>
+          <div class="alert good">
+            <span class="al-icon">✅</span>
+            <span>公開確認完了！続けて指示書の更新を行う。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="flow-item">
+        <div class="flow-num claude">6</div>
+        <div class="flow-body">
+          <h3><span class="tag claude">Claude</span>INSTRUCTIONS.md・REVIEW_RULES.mdの更新</h3>
+          <p>公開確認OKを確認したら、同じチャット内でClaudeに指示書の更新を依頼する。</p>
+          <div class="copy-box">公開確認できました。
+今回の作業内容を踏まえてINSTRUCTIONS.mdとREVIEW_RULES.mdを更新してください。<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
+          <p style="margin-top:10px">Claudeが更新版の2ファイルを出力したら、ローカルフォルダに上書き保存してGitHubにプッシュする。</p>
+          <code style="display:block;font-family:monospace;font-size:12px;color:var(--cyan);background:var(--cyan-dim);padding:8px 12px;border-radius:6px;margin:8px 0">\OneDrive\ドキュメント\Cowork\math-mystery-quiz\INSTRUCTIONS.md
+\OneDrive\ドキュメント\Cowork\math-mystery-quiz\REVIEW_RULES.md</code>
+          <div class="alert tip">
+            <span class="al-icon">💡</span>
+            <span>指示書を最新状態に保つことで、次回Claudeに読み込ませたときに現在の問題セット・ルールが正確に伝わる。</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 担当分担表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">👥</span>担当分担まとめ</div>
+    <table class="role-table">
+      <thead>
+        <tr>
+          <th>作業内容</th>
+          <th>担当</th>
+          <th>備考</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>問題のストーリー・数値・選択肢の設計</td>
+          <td><span class="tag claude">Claude</span></td>
+          <td>チャットで対話しながら仕上げる</td>
+        </tr>
+        <tr>
+          <td>数値の検算・REVIEW_RULESチェック</td>
+          <td><span class="tag claude">Claude</span></td>
+          <td>設計確定前に自動チェック</td>
+        </tr>
+        <tr>
+          <td>index.htmlの更新版生成</td>
+          <td><span class="tag claude">Claude</span></td>
+          <td>新問題を追加済みのファイルをまるごと出力</td>
+        </tr>
+        <tr>
+          <td>INSTRUCTIONS.md・REVIEW_RULES.mdの更新版生成</td>
+          <td><span class="tag claude">Claude</span></td>
+          <td>公開確認OK後に同じチャットで依頼</td>
+        </tr>
+        <tr>
+          <td>ローカルフォルダへの上書き保存</td>
+          <td><span class="tag you">あなた</span></td>
+          <td>index.htmlを上書き保存</td>
+        </tr>
+        <tr>
+          <td>ブラウザでの動作確認</td>
+          <td><span class="tag you">あなた</span></td>
+          <td>ローカルのindex.htmlをブラウザで開いて確認</td>
+        </tr>
+        <tr>
+          <td>GitHubへのコミット・プッシュ（index.html）</td>
+          <td><span class="tag you">あなた</span></td>
+          <td>動作確認後に実施</td>
+        </tr>
+        <tr>
+          <td>GitHub Pages公開後の最終確認</td>
+          <td><span class="tag you">あなた</span></td>
+          <td>公開URLで確認（反映まで1〜2分）</td>
+        </tr>
+        <tr>
+          <td>GitHubへのコミット・プッシュ（指示書2ファイル）</td>
+          <td><span class="tag you">あなた</span></td>
+          <td>INSTRUCTIONS.md・REVIEW_RULES.mdをプッシュ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 注意事項 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚠️</span>よくある失敗と注意事項</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="alert warn">
+        <span class="al-icon">⚠️</span>
+        <span><strong>毎回新しいチャットを作成し、2ファイルを読み込ませること</strong><br>
+        前回の続きチャットでは指示書の内容が正確に引き継がれない場合がある。</span>
+      </div>
+      <div class="alert warn">
+        <span class="al-icon">⚠️</span>
+        <span><strong>動作確認前にプッシュしない</strong><br>
+        ローカルで表示・動作を確認してからGitHubにプッシュする。</span>
+      </div>
+      <div class="alert warn">
+        <span class="al-icon">⚠️</span>
+        <span><strong>罫線（───・┌┐└┘│）は使用禁止</strong><br>
+        スマホで横スクロールが発生する原因になる。インデントや記号（▶ ★）で代替する。</span>
+      </div>
+      <div class="alert tip">
+        <span class="al-icon">💡</span>
+        <span><strong>指示書は問題追加のたびに更新する</strong><br>
+        INSTRUCTIONS.mdの問題セット一覧が古いままだと、次回Claudeが状況を誤認する可能性がある。</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  謎解き数学ミッションアプリ 作業マニュアル — 最終更新 2026年6月
+</footer>
+
+<script>
+function copyText(btn) {
+  const box = btn.parentElement;
+  const text = box.textContent.replace('コピー','').replace('コピー済み','').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent = 'コピー済み';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='コピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
