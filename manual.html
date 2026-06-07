@@ -420,46 +420,54 @@
 
       <!-- STEP 4 -->
       <div class="flow-item">
-        <div class="flow-num you">4</div>
+        <div class="flow-num claude">4</div>
         <div class="flow-body">
-          <h3><span class="tag you">あなた</span>GitHubにコミット・プッシュ</h3>
-          <p>index.htmlをGitHubにプッシュする。</p>
-          <ul>
-            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">index.html</code></li>
-          </ul>
-          <p style="margin-top:8px">コミットメッセージの例：</p>
-          <div class="copy-box">【問題追加】おじいちゃんの秘密のメッセージ（LEVEL. 小学校高学年）<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
+          <h3><span class="tag claude">Claude</span>INSTRUCTIONS.md・REVIEW_RULES.md・manual.htmlの更新</h3>
+          <p>動作確認OKを確認したら、同じチャット内でClaudeに指示書・マニュアルの更新を依頼する。</p>
+          <div class="copy-box">動作確認できました。
+今回の作業内容を踏まえてINSTRUCTIONS.mdとREVIEW_RULES.mdとmanual.htmlを更新してください。<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
+          <p style="margin-top:10px">Claudeが更新版の3ファイルを出力したら、ローカルフォルダに上書き保存する。</p>
+          <code style="display:block;font-family:monospace;font-size:12px;color:var(--cyan);background:var(--cyan-dim);padding:8px 12px;border-radius:6px;margin:8px 0">\OneDrive\ドキュメント\Cowork\math-mystery-quiz\INSTRUCTIONS.md
+\OneDrive\ドキュメント\Cowork\math-mystery-quiz\REVIEW_RULES.md
+\OneDrive\ドキュメント\Cowork\math-mystery-quiz\manual.html</code>
+          <div class="alert tip">
+            <span class="al-icon">💡</span>
+            <span>指示書・マニュアルを最新状態に保つことで、次回Claudeに読み込ませたときに現在の問題セット・ルールが正確に伝わる。</span>
+          </div>
         </div>
       </div>
 
       <!-- STEP 5 -->
       <div class="flow-item">
-        <div class="flow-num github">5</div>
+        <div class="flow-num you">5</div>
         <div class="flow-body">
-          <h3><span class="tag github">GitHub</span>Pages に自動反映・最終確認</h3>
-          <p>プッシュ後1〜2分でGitHub Pagesに自動デプロイされる。<br>
-          公開URLをブラウザで開いて最終確認する。</p>
-          <div class="alert good">
-            <span class="al-icon">✅</span>
-            <span>公開確認完了！続けて指示書の更新を行う。</span>
+          <h3><span class="tag you">あなた</span>GitHubにコミット・プッシュ</h3>
+          <p>index.html・INSTRUCTIONS.md・REVIEW_RULES.md・manual.htmlをまとめてGitHubにプッシュする。</p>
+          <ul>
+            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">index.html</code></li>
+            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">INSTRUCTIONS.md</code></li>
+            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">REVIEW_RULES.md</code></li>
+            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">manual.html</code></li>
+          </ul>
+          <p style="margin-top:8px">コミットメッセージの例：</p>
+          <div class="copy-box">💰 「消えたおこづかいの謎」5STEP→3STEP再設計・描画不具合修正<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
+          <div class="alert warn">
+            <span class="al-icon">⚠️</span>
+            <span>動作確認・指示書更新が完了してからプッシュすること。</span>
           </div>
         </div>
       </div>
 
       <!-- STEP 6 -->
       <div class="flow-item">
-        <div class="flow-num claude">6</div>
+        <div class="flow-num github">6</div>
         <div class="flow-body">
-          <h3><span class="tag claude">Claude</span>INSTRUCTIONS.md・REVIEW_RULES.mdの更新</h3>
-          <p>公開確認OKを確認したら、同じチャット内でClaudeに指示書の更新を依頼する。</p>
-          <div class="copy-box">公開確認できました。
-今回の作業内容を踏まえてINSTRUCTIONS.mdとREVIEW_RULES.mdを更新してください。<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
-          <p style="margin-top:10px">Claudeが更新版の2ファイルを出力したら、ローカルフォルダに上書き保存してGitHubにプッシュする。</p>
-          <code style="display:block;font-family:monospace;font-size:12px;color:var(--cyan);background:var(--cyan-dim);padding:8px 12px;border-radius:6px;margin:8px 0">\OneDrive\ドキュメント\Cowork\math-mystery-quiz\INSTRUCTIONS.md
-\OneDrive\ドキュメント\Cowork\math-mystery-quiz\REVIEW_RULES.md</code>
-          <div class="alert tip">
-            <span class="al-icon">💡</span>
-            <span>指示書を最新状態に保つことで、次回Claudeに読み込ませたときに現在の問題セット・ルールが正確に伝わる。</span>
+          <h3><span class="tag github">GitHub</span>Pages に自動反映・最終確認</h3>
+          <p>プッシュ後1〜2分でGitHub Pagesに自動デプロイされる。<br>
+          公開URLをブラウザで開いて最終確認する。</p>
+          <div class="alert good">
+            <span class="al-icon">✅</span>
+            <span>公開確認完了！今回の作業はすべて完了。</span>
           </div>
         </div>
       </div>
@@ -495,11 +503,6 @@
           <td>新問題を追加済みのファイルをまるごと出力</td>
         </tr>
         <tr>
-          <td>INSTRUCTIONS.md・REVIEW_RULES.mdの更新版生成</td>
-          <td><span class="tag claude">Claude</span></td>
-          <td>公開確認OK後に同じチャットで依頼</td>
-        </tr>
-        <tr>
           <td>ローカルフォルダへの上書き保存</td>
           <td><span class="tag you">あなた</span></td>
           <td>index.htmlを上書き保存</td>
@@ -510,19 +513,24 @@
           <td>ローカルのindex.htmlをブラウザで開いて確認</td>
         </tr>
         <tr>
-          <td>GitHubへのコミット・プッシュ（index.html）</td>
+          <td>INSTRUCTIONS.md・REVIEW_RULES.md・manual.htmlの更新版生成</td>
+          <td><span class="tag claude">Claude</span></td>
+          <td>動作確認OK後に同じチャットで依頼</td>
+        </tr>
+        <tr>
+          <td>指示書・マニュアルのローカル保存</td>
           <td><span class="tag you">あなた</span></td>
-          <td>動作確認後に実施</td>
+          <td>3ファイルをローカルフォルダに上書き保存</td>
+        </tr>
+        <tr>
+          <td>GitHubへのコミット・プッシュ（全4ファイル）</td>
+          <td><span class="tag you">あなた</span></td>
+          <td>index.html・INSTRUCTIONS.md・REVIEW_RULES.md・manual.htmlをまとめてプッシュ</td>
         </tr>
         <tr>
           <td>GitHub Pages公開後の最終確認</td>
           <td><span class="tag you">あなた</span></td>
           <td>公開URLで確認（反映まで1〜2分）</td>
-        </tr>
-        <tr>
-          <td>GitHubへのコミット・プッシュ（指示書2ファイル）</td>
-          <td><span class="tag you">あなた</span></td>
-          <td>INSTRUCTIONS.md・REVIEW_RULES.mdをプッシュ</td>
         </tr>
       </tbody>
     </table>
@@ -551,6 +559,11 @@
         <span class="al-icon">💡</span>
         <span><strong>指示書は問題追加のたびに更新する</strong><br>
         INSTRUCTIONS.mdの問題セット一覧が古いままだと、次回Claudeが状況を誤認する可能性がある。</span>
+      </div>
+      <div class="alert warn">
+        <span class="al-icon">⚠️</span>
+        <span><strong>choice-btnにtransition:allを使用しない</strong><br>
+        初期描画時に選択肢が光って見える不具合が発生する。transition:border-color .2s, background .2s, color .2s に限定すること。</span>
       </div>
     </div>
   </div>
