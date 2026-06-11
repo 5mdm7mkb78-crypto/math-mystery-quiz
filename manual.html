@@ -313,7 +313,7 @@
 <body>
 
 <header>
-  <div class="header-badge">WORKFLOW MANUAL v2.0</div>
+  <div class="header-badge">WORKFLOW MANUAL v2.1</div>
   <h1>謎解き数学アプリ<br><span>作業マニュアル</span></h1>
   <p>問題設計 → 動作確認 → GitHubデプロイまでの完全ガイド</p>
 </header>
@@ -363,16 +363,17 @@
         <div class="flow-num claude">1</div>
         <div class="flow-body">
           <h3><span class="tag claude">Claude</span>新しいチャットを作成・指示書を読み込ませる</h3>
-          <p>claude.ai で新しいチャットを開き、以下の2ファイルをアップロードして読み込ませる。</p>
+          <p>claude.ai で新しいチャットを開き、以下の3ファイルをアップロードして読み込ませる。</p>
           <ul>
             <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">INSTRUCTIONS.md</code> — アプリ仕様・問題構造・作業ルール</li>
             <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">REVIEW_RULES.md</code> — 問題品質チェックルール</li>
+            <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">index.html</code> — 本番ファイル（現在の問題データ・コード）</li>
           </ul>
-          <div class="copy-box">INSTRUCTIONS.mdとREVIEW_RULES.mdを読み込みました。
+          <div class="copy-box">INSTRUCTIONS.mdとREVIEW_RULES.mdとindex.htmlを読み込みました。
 新しい問題を一緒に設計してください。<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
           <div class="alert tip">
             <span class="al-icon">💡</span>
-            <span>問題を追加するたびに新しいチャットを作成し、毎回2ファイルを読み込ませること。前回のチャットの続きでは指示書の内容が薄れる場合がある。</span>
+            <span>問題を追加するたびに新しいチャットを作成し、毎回3ファイルを読み込ませること。前回のチャットの続きでは指示書の内容が薄れる場合がある。</span>
           </div>
         </div>
       </div>
@@ -384,7 +385,7 @@
           <h3><span class="tag claude">Claude</span>問題の設計・レビュー・index.html生成</h3>
           <p>Claudeとの対話で以下を順番に進める。</p>
           <ul>
-            <li>対象レベルの確認（例：LEVEL. 小学校高学年）</li>
+            <li>対象レベルの確認（小学校低学年 / 小学校高学年 / 中学校（前） / 中学校（後））</li>
             <li>テーマ・ストーリー・STEP数の設計</li>
             <li>各STEPの問題文・選択肢・解説の設計と検算</li>
             <li>REVIEW_RULESに基づく品質チェック</li>
@@ -450,7 +451,7 @@
             <li><code style="color:var(--cyan);background:var(--cyan-dim);padding:1px 5px;border-radius:3px;font-family:monospace">manual.html</code></li>
           </ul>
           <p style="margin-top:8px">コミットメッセージの例：</p>
-          <div class="copy-box">💰 「消えたおこづかいの謎」5STEP→3STEP再設計・描画不具合修正<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
+          <div class="copy-box">🎮 小学校低学年レベルと「おるすばん大作戦」を追加<button class="copy-btn" onclick="copyText(this)">コピー</button></div>
           <div class="alert warn">
             <span class="al-icon">⚠️</span>
             <span>動作確認・指示書更新が完了してからプッシュすること。</span>
@@ -542,7 +543,7 @@
     <div style="display:flex;flex-direction:column;gap:10px">
       <div class="alert warn">
         <span class="al-icon">⚠️</span>
-        <span><strong>毎回新しいチャットを作成し、2ファイルを読み込ませること</strong><br>
+        <span><strong>毎回新しいチャットを作成し、3ファイル（INSTRUCTIONS.md・REVIEW_RULES.md・index.html）を読み込ませること</strong><br>
         前回の続きチャットでは指示書の内容が正確に引き継がれない場合がある。</span>
       </div>
       <div class="alert warn">
